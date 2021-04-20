@@ -1,0 +1,15 @@
+name: url-checker
+version: 0.1.0
+
+authors:
+  - tim0-12432
+
+targets:
+  url-checker:
+    main: src/url-checker.cr
+
+dependencies:
+  tablo:
+    github: hutou/tablo
+
+crystal: 1.0.0
