@@ -1,4 +1,5 @@
 require "http/client"
+require "tablo"
 
 WORKERS = 3
 URLS = [
@@ -11,7 +12,7 @@ URLS = [
 ]
 
 url_stream = Channel(String).new
-result_stream = Channel({String, Int32 | Exception, Bool}).new
+result_stream = Channel({String, Int32 | String | Nil, Bool}).new
 
 spawn do
     URLS.each{|url| url_stream.send url}
@@ -23,7 +24,9 @@ get_status = -> (url : String) {
             {url, result.status_code, result.success?}
         end
     rescue exception : Socket::Addrinfo::Error
-        {url, exception, false}
+        {url, exception.error_code, false}
+    rescue exception
+        {url, exception.message, false}
     end
 }
 
@@ -37,9 +40,11 @@ WORKERS.times {
     end
 }
 
+
 stats = {"successes" => 0, "failures" => 0}
-results = Array({String, Int32 | Exception}).new
+results = Array({String, Int32 | String | Nil}).new
 loop do
+    puts "URL #{results.size + 1} out of #{URLS.size}"
     url, status, success = result_stream.receive
     results.push({url, status})
     if success
@@ -47,7 +52,22 @@ loop do
     else
         stats["failures"] += 1
     end
-end
-puts results
 
-#p URLS.map{|url| get_status.call(url)}
+    if results.size == URLS.size
+        break
+    end
+end
+
+data1 = results.map{|item| [item[0], typeof(item[1].to_s) == String ? item[1] : 0]}
+table1 = Tablo::Table.new(data1) do |t|
+    t.add_column("Url") {|n| n[0]}
+    t.add_column("Status") {|n| n[1]}
+end
+puts table1
+data2 = [[URLS.size, stats["successes"], stats["failures"]]]
+table2 = Tablo::Table.new(data2) do |t|
+    t.add_column("Total") {|n| n[0]}
+    t.add_column("Successess") {|n| n[1]}
+    t.add_column("Failures") {|n| n[2]}
+end
+puts table2
