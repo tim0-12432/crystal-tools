@@ -1,0 +1,11 @@
+{
+    "workers": 10,
+    "urls": [
+        "http://google.com",
+        "https://www.w3schools.com",
+        "https://amazon.co.uk",
+        "https://github.com/non-existing-project",
+        "https://crystal-lang.org",
+        "http://123.non-existent-page.de"
+    ]
+}

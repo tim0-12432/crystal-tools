@@ -1,21 +1,17 @@
 require "http/client"
 require "tablo"
+require "json"
 
-WORKERS = 3
-URLS = [
-    "http://google.com",
-    "https://www.w3schools.com",
-    "https://amazon.co.uk",
-    "https://github.com/non-existing-project",
-    "https://crystal-lang.org",
-    "http://123.non-existent-page.de"
-]
+config = File.open("./src/config.json") do |file|
+  JSON.parse(file)
+end
+puts "Configuration: #{config}"
 
 url_stream = Channel(String).new
 result_stream = Channel({String, Int32 | String | Nil, Bool}).new
 
 spawn do
-    URLS.each{|url| url_stream.send url}
+    config["urls"].as_a.each{|url| url_stream.send url.as_s}
 end
 
 get_status = -> (url : String) {
@@ -30,7 +26,7 @@ get_status = -> (url : String) {
     end
 }
 
-WORKERS.times {
+config["workers"].as_i.times {
     spawn do
         loop do
             url = url_stream.receive
@@ -44,7 +40,7 @@ WORKERS.times {
 stats = {"successes" => 0, "failures" => 0}
 results = Array({String, Int32 | String | Nil}).new
 loop do
-    puts "URL #{results.size + 1} out of #{URLS.size}"
+    puts "URL #{results.size + 1} out of #{config["urls"].as_a.size}"
     url, status, success = result_stream.receive
     results.push({url, status})
     if success
@@ -53,7 +49,7 @@ loop do
         stats["failures"] += 1
     end
 
-    if results.size == URLS.size
+    if results.size == config["urls"].as_a.size
         break
     end
 end
@@ -64,7 +60,8 @@ table1 = Tablo::Table.new(data1) do |t|
     t.add_column("Status") {|n| n[1]}
 end
 puts table1
-data2 = [[URLS.size, stats["successes"], stats["failures"]]]
+
+data2 = [[config["urls"].as_a.size, stats["successes"], stats["failures"]]]
 table2 = Tablo::Table.new(data2) do |t|
     t.add_column("Total") {|n| n[0]}
     t.add_column("Successess") {|n| n[1]}
