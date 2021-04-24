@@ -1,0 +1,12 @@
+{
+    "workers": 10,
+    "subdomain-lists": [
+        "standard",
+        100,
+        500,
+        1000,
+        10000
+    ],
+    "list-num": 0,
+    "domain": "google.com"
+}
