@@ -4,3 +4,5 @@
 
 - **[url-checker](https://github.com/tim0-12432/crystal-tools/tree/master/url-checker)**:
     checks what status is responded by an url
+- **[subdomain-checker](https://github.com/tim0-12432/crystal-tools/tree/master/subdomain-checker)**:
+    checks which subdomains a weburl has

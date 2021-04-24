@@ -7,6 +7,7 @@ class Checker
     property list : Array(String | Nil) | Array(String)
     property domain : String
     property results : Array(String)
+    property workers : Int32
 
     def initialize
         config = File.open("./src/config.json") do |file|
@@ -24,28 +25,49 @@ class Checker
         end
         @domain = config["domain"].as_s
         @results = Array(String).new
+        @workers = config["workers"].as_i
     end
 
     def run
-        @list.map_with_index do |subdomain, index|
-            url = "#{subdomain}.#{@domain}"
-            begin
-                HTTP::Client.get "http://#{url}" do |result|
-                    if result.status_code == 200 || result.status_code == 301
-                        @results.push url
-                        puts "...was successful!"
+        sub_stream = Channel({String | Nil, Int32}).new
+        result_stream = Channel(String).new
+        count = 0
+        spawn do
+            @list.map_with_index{|subdomain, index| sub_stream.send({subdomain, index})}
+        end
+        @workers.times {
+            spawn do
+                loop do
+                    subdomain, index = sub_stream.receive
+                    count = index + 1
+                    url = "#{subdomain}.#{@domain}"
+                    puts "Checking #{url}... #{count}/#{@list.size}"
+                    begin
+                        HTTP::Client.get "http://#{url}" do |result|
+                            if result.status_code == 200 || result.status_code == 301
+                                result_stream.send url
+                            end
+                        end
+                    rescue exception
                     end
                 end
-            rescue exception
             end
-            puts "Checking #{url}... #{index}/#{@list.size}"
+        }
+        loop do
+            url = result_stream.receive
+            @results.push(url)
+            if count == @list.size
+                break
+            end
         end
     end
 
     def print
-        data = @results.map{|item| [item[0]]}
+        data = @results.map{|item| [item.split(".")[0], item]}
+        data.push ["Found:", "#{@results.size}"]
         table = Tablo::Table.new(data) do |t|
-            t.add_column("Subdomains") {|n| n[0]}
+            t.add_column("Subdomains", width: 10) {|n| n[0]}
+            t.add_column("Urls", width: 20) {|n| n[1]}
         end
         puts table
     end
