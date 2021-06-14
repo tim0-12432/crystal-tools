@@ -1,0 +1,19 @@
+name: consumption-collector
+version: 0.1.0
+
+authors:
+  - tim0-12432
+
+targets:
+  subdomain-checker:
+    main: src/main.cr
+
+dependencies:
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+  crest:
+    github: mamantoha/crest
+  aquaplot:
+    github: crystal-data/aquaplot
+
+crystal: 1.0.0

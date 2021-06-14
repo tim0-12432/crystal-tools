@@ -1,0 +1,8 @@
+{
+    "url": "http://192.168.43.111/cm?cmnd=status%208",
+    "fields": [
+        "power"
+    ],
+    "output": ".csv",
+    "delimiter": ","
+}

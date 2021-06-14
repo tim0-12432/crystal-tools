@@ -1,0 +1,26 @@
+version: 2.0
+shards:
+  aquaplot:
+    git: https://github.com/crystal-data/aquaplot.git
+    version: 0.1.0+git.commit.a0373276c15996842826214b7f580c88a589347e
+
+  crest:
+    git: https://github.com/mamantoha/crest.git
+    version: 0.27.0
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.10.1
+
+  http-client-digest_auth:
+    git: https://github.com/mamantoha/http-client-digest_auth.git
+    version: 0.6.0
+
+  http_proxy:
+    git: https://github.com/mamantoha/http_proxy.git
+    version: 0.8.0
+
+  sqlite3:
+    git: https://github.com/crystal-lang/crystal-sqlite3.git
+    version: 0.18.0
+
