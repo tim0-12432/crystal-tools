@@ -3,6 +3,7 @@
     "fields": [
         "power"
     ],
+    "intervall": 1,
     "output": ".csv",
     "delimiter": ","
 }

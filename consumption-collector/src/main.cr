@@ -12,7 +12,7 @@ loop do
         p res
         time = Time.local Time::Location.load("Europe/Berlin")
         db.appendMeasurement(time.to_s("%Y-%m-%d"), time.to_s("%H:%M:%S"), res)
-        sleep 1.second
+        sleep config.intervall.second
     rescue exception
         postAnalysis db, config
         exit

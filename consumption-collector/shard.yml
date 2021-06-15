@@ -11,8 +11,6 @@ targets:
 dependencies:
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-  crest:
-    github: mamantoha/crest
   aquaplot:
     github: crystal-data/aquaplot
 
