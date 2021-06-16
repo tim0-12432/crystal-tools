@@ -24,10 +24,13 @@ class Fetcher
             end
         end
         @fields.each do |field|
-            p field.capitalize
-            value = response[field.capitalize]
+            value : Int32 | Float64 | JSON::Any | String = response[field.capitalize]
             if value.is_a?(JSON::Any)
-                value = value.as_i
+                begin
+                    value = value.as_i
+                rescue Exception
+                    value = value.as?(Float64) || 0
+                end
             end
             if value.is_a?(Float64) || value.is_a?(Int32)
                 @result.push(value)

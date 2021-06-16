@@ -11,7 +11,7 @@ class Database
         @dataFields = config.fields
         fields = ""
         @dataFields.each do |field|
-            fields += ", #{field} INTEGER"
+            fields += ", #{field} REAL"
         end
         DB.open @databasePath do |db|
             db.exec "CREATE TABLE IF NOT EXISTS measurements (date DATE, time TIME#{fields})"

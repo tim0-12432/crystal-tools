@@ -1,7 +1,8 @@
 {
     "url": "http://192.168.43.111/cm?cmnd=status%208",
     "fields": [
-        "power"
+        "power",
+        "current"
     ],
     "intervall": 1,
     "output": ".csv",

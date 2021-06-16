@@ -5,6 +5,14 @@
 - gosund smart plug sp1
 - flashed with tasmota
 
+## Configuration
+
+- `url`: the url to the smart plug api
+- `fields`: fields from the api which should be stored
+- `intervall`: measure intervall in seconds
+- `output`: file extension of the output file
+- `delimiter`: delimiter for output file
+
 ## Example
 
 1. plug in sp1.

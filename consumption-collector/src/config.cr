@@ -3,7 +3,7 @@ require "json"
 class Config
     property url : String
     property fields : Array(String)
-    property intervall : Int64
+    property intervall : Int32
     property output : String
     property delimiter : String
 

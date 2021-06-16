@@ -5,15 +5,17 @@ require "./analyzer"
 
 config = Config.new
 db = Database.new config
+puts "Starting..."
 loop do
     begin
         fetcher = Fetcher.new config
         res = fetcher.fetch
-        p res
+        puts res
         time = Time.local Time::Location.load("Europe/Berlin")
         db.appendMeasurement(time.to_s("%Y-%m-%d"), time.to_s("%H:%M:%S"), res)
         sleep config.intervall.second
     rescue exception
+        puts exception
         postAnalysis db, config
         exit
     end
@@ -24,8 +26,11 @@ loop do
 end
 
 def postAnalysis(db, config)
-    key = "power"
-    list = db.getMeasurements key
+    puts "\nAnalyzing..."
     analyzer = Analyzer.new config
-    analyzer.exportFile list
+    config.fields.each do |field|
+        list = db.getMeasurements field
+        analyzer.exportFile list
+    end
+    puts "Finished"
 end
