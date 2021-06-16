@@ -24,7 +24,9 @@ class Analyzer
 
     def exportFile(list, key)
         filename = "data-#{key}.#{outputExtension.strip(".")}"
-        File.write(filename, "date#{@delimiter}time#{@delimiter}#{key}\n", mode: "a")
+        if !File.exists?(filename)
+            File.write(filename, "date#{@delimiter}time#{@delimiter}#{key}\n", mode: "a")
+        end
         list.each do |item|
             content = "#{item["date"]}#{@delimiter}#{item["time"]}#{@delimiter}#{item["value"]}\n"
             File.write(filename, content, mode: "a")
