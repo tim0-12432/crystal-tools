@@ -30,7 +30,7 @@ def postAnalysis(db, config)
     analyzer = Analyzer.new config
     config.fields.each do |field|
         list = db.getMeasurements field
-        analyzer.exportFile list
+        analyzer.exportFile list, field
     end
     puts "Finished"
 end

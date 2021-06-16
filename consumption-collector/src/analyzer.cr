@@ -22,8 +22,9 @@ class Analyzer
         plt.close
     end
 
-    def exportFile(list)
-        filename = "data.#{outputExtension.strip(".")}"
+    def exportFile(list, key)
+        filename = "data-#{key}.#{outputExtension.strip(".")}"
+        File.write(filename, "date#{@delimiter}time#{@delimiter}#{key}\n", mode: "a")
         list.each do |item|
             content = "#{item["date"]}#{@delimiter}#{item["time"]}#{@delimiter}#{item["value"]}\n"
             File.write(filename, content, mode: "a")
